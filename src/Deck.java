@@ -1,11 +1,13 @@
 package src;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Deck {
 //    public static List<Card>> deck() {
 //        List<Card> cards = initializeDeck();
+//        shuffleDeck(cards)
 //        return cards;
 //    }
     private static List<Card> initializeDeck() {
@@ -15,6 +17,10 @@ public class Deck {
                 cards.add(new Card(j));
             }
         }
+        return cards;
+    }
+    private static List<Card> shuffleDeck(List<Card> cards) {
+        Collections.shuffle(cards);
         return cards;
     }
 }
