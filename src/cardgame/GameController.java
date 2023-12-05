@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Scanner;
 
 public class GameController {
+    private InputHandler inputHandler = new InputHandler();  // InputHandler 인스턴스 생성
 
-
-    public static void playGame() {
+    public void playGame() {
         Scanner scanner = new Scanner(System.in);
 
         System.out.print("1P 이름을 입력하세요: ");
@@ -23,22 +23,12 @@ public class GameController {
         int correct = 0;
 
         Player currentPlayer = player1;
-
+        BoardPrinter.printBoard(cards);
         while (remainPairs > 0 && correct != correctNumber) {
-            BoardPrinter.printBoard(cards);
             System.out.printf("<%s의 차례, 시도 %d, 남은 카드: %d> 좌표를 두 번 입력하세요.%n", currentPlayer.getName(), attempts + 1, remainPairs * 2);
 
-            int[] firstCoords;
-            do {
-                System.out.print("입력 1? ");
-                firstCoords = InputHandler.parseCoords(scanner.nextLine());
-            } while (!InputHandler.isValidCoords(firstCoords));
-
-            int[] secondCoords;
-            do {
-                System.out.print("입력 2? ");
-                secondCoords = InputHandler.parseCoords(scanner.nextLine());
-            } while (!InputHandler.isValidCoords(secondCoords));
+            int[] firstCoords = inputHandler.getValidCoords();
+            int[] secondCoords = inputHandler.getValidCoords();
 
             Card firstCard = cards.get(firstCoords[0]).get(firstCoords[1]);
             Card secondCard = cards.get(secondCoords[0]).get(secondCoords[1]);
@@ -71,7 +61,7 @@ public class GameController {
         System.out.printf("게임 종료! %s 승리! %s: %d점, %s: %d점%n", winner.getName(), player1.getName(), player1.getScore(), player2.getName(), player2.getScore());
     }
 
-    public static int correctCards(List<List<Card>> cards) {
+    public int correctCards(List<List<Card>> cards) {
         int count = 0;
 
         // 모든 행을 하나의 리스트로 펼침
