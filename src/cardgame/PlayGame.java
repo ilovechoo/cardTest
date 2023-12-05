@@ -6,17 +6,25 @@ import java.util.Scanner;
 
 public class PlayGame {
     public static void playGame() {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("1P 이름을 입력하세요: ");
+        Player player1 = new Player(scanner.nextLine());
+
+        System.out.print("2P 이름을 입력하세요: ");
+        Player player2 = new Player(scanner.nextLine());
+
         List<List<Card>> cards = Deck.deck();
         int correctNumber = correctCards(cards);
         int attempts = 0;
         int remainPairs = 8;
         int correct = 0;
 
-        Scanner scanner = new Scanner(System.in);
+        Player currentPlayer = player1;
 
         while (remainPairs > 0 && correct != correctNumber) {
             printBoard(cards);
-            System.out.printf("<시도 %d, 남은 카드: %d> 좌표를 두 번 입력하세요.%n", attempts + 1, remainPairs * 2);
+            System.out.printf("<%s의 차례, 시도 %d, 남은 카드: %d> 좌표를 두 번 입력하세요.%n", currentPlayer.getName(), attempts + 1, remainPairs * 2);
 
             int[] firstCoords;
             do {
@@ -43,17 +51,23 @@ public class PlayGame {
                 secondCard.remove();
                 correct++;
                 remainPairs--;
+
+                currentPlayer.addScore();
+                currentPlayer.incrementCombo();
             } else {
                 System.out.println("일치하지 않는 카드입니다.");
                 firstCard.flip();
                 secondCard.flip();
+
+                currentPlayer.resetCombo();
+                currentPlayer = (currentPlayer == player1) ? player2 : player1;
             }
             attempts++;
         }
 
-        System.out.printf("축하합니다! %d번의 시도 끝에 모든 카드를 맞추셨습니다.", attempts);
+        Player winner = (player1.getScore() > player2.getScore()) ? player1 : player2;
+        System.out.printf("게임 종료! %s 승리! %s: %d점, %s: %d점%n", winner.getName(), player1.getName(), player1.getScore(), player2.getName(), player2.getScore());
     }
-
     private static void printBoard(List<List<Card>> cards) {
         for (List<Card> row : cards) {
             for (Card card : row) {
